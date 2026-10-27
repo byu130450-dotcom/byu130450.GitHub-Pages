@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#69469a">
+<meta name="description" content="简洁的 2FA 验证器，自动记住密钥，一键复制或清空。">
+<title>2FA 验证器 · Keylane</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="atmosphere" aria-hidden="true"></div>
+<div class="shell">
+<div class="wordmark"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m12 3 7.5 3v5.5c0 4.6-4 7.8-7.5 9-3.5-1.2-7.5-4.4-7.5-9V6L12 3Z" stroke="currentColor" stroke-width="1.6"/><path d="m8.5 11.5 2.3 2.3 4.8-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>keylane</span></div>
+<main>
+<header><div class="header-top"><div class="app-icon"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="3" stroke="currentColor" stroke-width="1.6"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 5v2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></div><span class="local-badge"><i></i> 本地运行</span></div><h1>2FA 验证器</h1><p>输入密钥，即刻获取动态验证码。</p></header>
+<div class="field-label"><label for="secret">验证密钥</label><span>BASE32</span></div>
+<div class="input-wrap"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="8" cy="9" r="4" stroke="currentColor" stroke-width="1.6"/><path d="m11 12 8 8m-3-3 2-2m-5-1 2-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><input id="secret" type="password" autocomplete="off" spellcheck="false" autocapitalize="characters" placeholder="输入或粘贴你的密钥" aria-describedby="error"><button id="reveal" aria-label="显示密钥" aria-pressed="false" type="button">显示</button></div>
+<p id="error" role="status" class="hint">支持 Base32 密钥，自动忽略空格。</p>
+<label class="remember"><span class="remember-copy">记住上次密钥<small id="saved-state" aria-live="polite">下次打开，自动恢复密钥</small></span><input id="remember" type="checkbox" checked><span class="toggle" aria-hidden="true"></span></label>
+<section id="output" class="output" data-state="empty" aria-label="动态验证码">
+<div class="output-heading"><span>动态验证码</span><span id="badge" class="badge" role="status">等待密钥</span></div>
+<div id="code" class="code" aria-label="当前验证码">··· ···</div>
+<div class="timer"><svg viewBox="0 0 36 36" aria-hidden="true"><circle class="track" cx="18" cy="18" r="15"/><circle id="ring" cx="18" cy="18" r="15"/></svg><span id="countdown">输入密钥后自动生成</span></div>
+<div class="progress-track" aria-hidden="true"><div id="progress"></div></div>
+</section>
+<div class="actions"><button id="copy" disabled type="button"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="8" y="8" width="12" height="13" rx="2.5" stroke="currentColor" stroke-width="1.6"/><path d="M15 5V4a1 1 0 0 0-1-1H5a2 2 0 0 0-2 2v9a1 1 0 0 0 1 1h1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span id="copy-label">复制验证码</span></button><button id="clear" type="button"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 6h16M9 6V4h6v2M6 6l1 14h10l1-14m-8 4v6m4-6v6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>清空</button></div>
+<footer><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m12 3 7 3v5c0 4-3.4 7.2-7 9-3.6-1.8-7-5-7-9V6l7-3Z" stroke="currentColor" stroke-width="1.6"/><path d="m9 11 2 2 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>密钥仅保存在此浏览器，不会上传</footer>
+</main>
+<p class="bottom-note">PRIVATE BY DESIGN</p>
+</div>
+<div id="toast" role="status"></div>
+<script type="module" src="app.js"></script>
+</body>
+</html>

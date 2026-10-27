@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#69469a">
+<meta name="description" content="简洁的 2FA 验证器，自动记住密钥，一键复制或清空。">
+<title>2FA 验证器 · Keylane</title>
+<style>:root{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;color:#322d3a;background:#69469a;font-synthesis:none;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}body{margin:0;min-height:100svh;display:grid;place-items:center;padding:40px 20px;background:radial-gradient(ellipse at 14% 16%,#a178d1 0,transparent 54%),radial-gradient(ellipse at 88% 90%,#8355b3 0,transparent 48%),linear-gradient(145deg,#7952aa,#483066);isolation:isolate}
+.atmosphere{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}.atmosphere:before{content:'';position:absolute;width:760px;height:760px;left:calc(50% - 720px);top:calc(50% - 500px);border-radius:50%;border:1px solid #ffffff0d;background:radial-gradient(circle at 35% 25%,#dcbeef42,#b995e014 65%,transparent);filter:blur(1px)}.atmosphere:after{content:'';position:absolute;width:560px;height:560px;left:calc(50% + 80px);top:calc(50% - 50px);border-radius:50%;background:radial-gradient(circle at 25% 20%,#d6b0f134,#b892e416 65%,transparent);filter:blur(14px)}
+.shell{width:100%;max-width:450px;animation:arrive .4s ease-out both}.wordmark{display:flex;justify-content:center;align-items:center;gap:8px;color:#f5eff8dc;margin-bottom:27px;font-size:16px;font-weight:500;letter-spacing:.3px}.wordmark svg{width:20px;height:20px}
+main{position:relative;isolation:isolate;padding:34px 34px 27px;border-radius:28px;border:1px solid #ffffff70;background:linear-gradient(145deg,#faf6ffcc,#eee3faad 52%,#f2e9fcbd);backdrop-filter:blur(36px) saturate(115%);-webkit-backdrop-filter:blur(36px) saturate(115%);box-shadow:0 30px 80px -25px #17111c70,0 5px 20px #251b3014,inset 0 1px 1px #ffffffe0,inset 0 -1px 1px #ffffff50}
+main:before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;border-radius:inherit;background:linear-gradient(115deg,#ffffff24,transparent 28%,transparent 80%,#ffffff10);box-shadow:inset 1px 0 1px #ffffff50}
+header{margin-bottom:30px}.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:25px}.app-icon{width:43px;height:43px;display:grid;place-items:center;border-radius:13px;color:#7d52a2;background:linear-gradient(140deg,#ffffff75,#ffffff20);border:1px solid #ffffff9c;box-shadow:0 3px 8px #3f304b08,inset 0 1px #ffffff9c}.app-icon svg{width:23px;height:23px}.local-badge{display:flex;align-items:center;gap:6px;font-size:10px;font-weight:400;color:#746780;background:#ffffff26;border:1px solid #ffffff48;padding:6px 9px;border-radius:20px}.local-badge i{height:4px;width:4px;border-radius:50%;background:#8c7b9c}
+h1{margin:0;font-size:29px;font-weight:600;letter-spacing:-1px;line-height:1.3;color:#35303e}header p{margin:11px 0 0;font-size:12px;color:#797082;line-height:1.6}
+.field-label{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.field-label label{font-size:12px;font-weight:500;color:#504757}.field-label>span{font-size:9px;font-weight:400;letter-spacing:1.4px;color:#8e8398}
+.input-wrap{display:flex;align-items:center;background:#ffffff33;border:1px solid #ffffff75;border-radius:12px;box-shadow:inset 0 1px 2px #5b476907;transition:box-shadow .2s,background .2s}.input-wrap:focus-within{background:#ffffff65;box-shadow:0 0 0 3px #8f739d20;border-color:#ffffffcf}.input-wrap>svg{width:17px;height:17px;flex-shrink:0;margin-left:14px;color:#9a8ba6}
+input[type=password],input[type=text]{font:inherit;font-size:14px;width:100%;min-width:0;padding:15px 10px;background:none;border:0;outline:none;color:#41354a}input::placeholder{color:#97899f}button{font:inherit;cursor:pointer;border:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent}button:focus-visible{outline:2px solid #7e628f;outline-offset:4px}#reveal{background:none;padding:13px 14px;color:#786387;font-size:11px;white-space:nowrap;min-height:44px}#reveal:hover{color:#4e365e}
+.hint{font-size:10px;color:#86788f;line-height:1.65;margin:9px 0 15px;min-height:17px}.hint.error{color:#9d3446}.remember{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:#76677f;cursor:pointer;position:relative;min-height:34px}.remember input{position:absolute;right:0;top:0;width:44px;height:34px;margin:0;opacity:0;cursor:pointer}.toggle{width:36px;height:22px;border:1px solid #ffffff45;border-radius:25px;background:#b5aabc;box-shadow:inset 0 1px 3px #4930580c;pointer-events:none;transition:background .2s}.toggle:after{content:'';display:block;width:16px;height:16px;margin:2px;border-radius:50%;background:linear-gradient(#fff,#f4f0f7);box-shadow:0 1px 3px #59406d25;transition:transform .2s}.remember input:checked+.toggle{background:#9863bf}.remember input:checked+.toggle:after{transform:translateX(14px)}.remember input:focus-visible+.toggle{outline:2px solid #7e628f;outline-offset:4px}
+.output{position:relative;margin:23px 0 21px;padding:18px 18px 23px;text-align:center;border-radius:19px;border:1px solid #ffffff75;background:linear-gradient(135deg,#ffffff3d,#f9f6ff16 60%,#ffffff33);box-shadow:inset 0 1px #ffffff91,inset 0 -1px #ffffff30}.output-heading{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:#81718d}.badge{font-size:9px;color:#8a7895;background:#ffffff22;border:1px solid #ffffff40;border-radius:5px;padding:3px 6px}.code{font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;font-size:50px;font-variant-numeric:tabular-nums;letter-spacing:3px;font-weight:400;color:#654084;white-space:pre;line-height:1.1;margin:27px 0 23px;text-shadow:0 1px #ffffff60;user-select:all}.timer{display:flex;align-items:center;justify-content:center;gap:7px;font-size:10px;color:#8a7997}.timer svg{width:14px;height:14px;transform:rotate(-90deg)}.timer circle{fill:none;stroke-width:3}.track{stroke:#cfc3d9}#ring{stroke:#9c68c4;stroke-dasharray:94.25;stroke-dashoffset:94.25;transition:stroke-dashoffset .2s}
+.actions{display:flex;gap:10px}.actions button{display:flex;justify-content:center;align-items:center;gap:8px;min-height:48px;padding:12px 18px;border-radius:13px;font-size:12px;font-weight:500;transition:background .18s,box-shadow .18s,transform .18s}.actions button svg{width:15px;height:15px;flex-shrink:0}#copy{flex:1;color:#faf7fc;border:1px solid #a97ad0;background:linear-gradient(155deg,#a775d1,#8954b6);box-shadow:0 4px 10px #5c3e7520,inset 0 1px #ffffff30}#copy:hover:not(:disabled){background:linear-gradient(155deg,#9a65c7,#7b46a9);box-shadow:0 5px 12px #5c3e7530,inset 0 1px #ffffff40}#copy:disabled{background:linear-gradient(155deg,#b799d0,#a88ac2);border-color:#ffffff50;box-shadow:inset 0 1px #ffffff40;color:#fff;cursor:default}#clear{color:#7f6a8d;border:1px solid #ffffff75;background:linear-gradient(145deg,#ffffff40,#ffffff15);box-shadow:inset 0 1px #ffffff60}#clear:hover{background:#ffffff70}.actions button:active:not(:disabled){transform:translateY(1px)}
+footer{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:25px;font-size:10px;color:#8a7a95}footer svg{width:12px;height:12px;flex-shrink:0}.bottom-note{text-align:center;color:#ddd0e299;font-size:8px;font-weight:500;letter-spacing:2.6px;margin:23px 0 0}
+#toast{position:fixed;bottom:25px;left:50%;z-index:10;transform:translateX(-50%) translateY(5px);max-width:calc(100% - 32px);width:max-content;border:1px solid #ffffff60;border-radius:15px;background:#ebe5f0e6;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 7px 25px #2e174825,inset 0 1px #ffffff70;color:#564361;font-size:12px;padding:14px 22px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s}#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@keyframes arrive{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){main{background:linear-gradient(145deg,#f0e7fa,#e3d5f0)}#toast{background:#ebe5f0}}
+@media(max-width:400px){body{padding:26px 16px}main{padding:27px 23px 25px;border-radius:25px}.wordmark{margin-bottom:22px}.code{font-size:42px;letter-spacing:2px}.output{padding-left:14px;padding-right:14px}.actions button{padding:12px 14px}h1{font-size:27px}header{margin-bottom:26px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+@media(prefers-reduced-transparency:reduce){main{background:#ece5f3}.input-wrap,.output{background:#f3edf8}#toast{background:#ebe5f0}}
+
+/* Refined hierarchy and interaction states. */
+header p{color:#6e607c;font-size:13px}.field-label label{font-size:13px}.field-label>span{color:#7f6b90}.local-badge{color:#665371}.hint{color:#766083;font-size:11px}input[type=password],input[type=text]{font-size:16px;padding-top:14px;padding-bottom:14px}input::placeholder{font-size:13px;color:#8b739e}.input-wrap:has(input[aria-invalid=true]){border-color:#bf7f94;box-shadow:0 0 0 2px #bf7f9410}.remember{min-height:44px;margin-top:4px}.remember input{height:44px}.remember-copy{display:flex;flex-direction:column;gap:5px}.remember-copy small{font-size:10px;font-weight:400;color:#806a90;line-height:1.5}.remember-copy small.storage-error{color:#9d3446}.output{overflow:hidden;padding-bottom:25px;transition:border-color .2s}.output-heading{font-size:11px;color:#715c82}.badge{color:#756082}.code{font-weight:450}.output[data-state=empty] .code,.output[data-state=error] .code{color:#ad95bf;font-weight:400}.output[data-state=ready] .badge{color:#6f4b8e;background:#cdb7e52b;border-color:#c5addd50}.timer{color:#78618b;font-variant-numeric:tabular-nums}.progress-track{height:2px;position:absolute;left:20px;right:20px;bottom:0;background:#9a72bf12;border-radius:4px;overflow:hidden}#progress{height:100%;background:linear-gradient(90deg,#b895d1,#9267b5);transform:scaleX(0);transform-origin:left;transition:transform .2s}.output.expiring .timer{color:#926438}.output.expiring #ring{stroke:#b68a57}.output.expiring #progress{background:#b68a57}#copy.copied{background:linear-gradient(155deg,#8e6db2,#755491)}footer{font-size:11px;color:#776384;line-height:1.5}#copy:disabled{color:#fcfaff;opacity:.8}.actions button{min-height:50px}#reveal{min-width:50px}.bottom-note{color:#e9def0b3}
+@media(max-width:400px){.remember-copy small{font-size:10px}.code{font-size:clamp(34px,11vw,42px)}footer{font-size:10px}}
+</style>
+</head>
+<body>
+<div class="atmosphere" aria-hidden="true"></div>
+<div class="shell">
+<div class="wordmark"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m12 3 7.5 3v5.5c0 4.6-4 7.8-7.5 9-3.5-1.2-7.5-4.4-7.5-9V6L12 3Z" stroke="currentColor" stroke-width="1.6"/><path d="m8.5 11.5 2.3 2.3 4.8-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>keylane</span></div>
+<main>
+<header><div class="header-top"><div class="app-icon"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="3" stroke="currentColor" stroke-width="1.6"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 5v2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></div><span class="local-badge"><i></i> 本地运行</span></div><h1>2FA 验证器</h1><p>输入密钥，即刻获取动态验证码。</p></header>
+<div class="field-label"><label for="secret">验证密钥</label><span>BASE32</span></div>
+<div class="input-wrap"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="8" cy="9" r="4" stroke="currentColor" stroke-width="1.6"/><path d="m11 12 8 8m-3-3 2-2m-5-1 2-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><input id="secret" type="password" autocomplete="off" spellcheck="false" autocapitalize="characters" placeholder="输入或粘贴你的密钥" aria-describedby="error"><button id="reveal" aria-label="显示密钥" aria-pressed="false" type="button">显示</button></div>
+<p id="error" role="status" class="hint">支持 Base32 密钥，自动忽略空格。</p>
+<label class="remember"><span class="remember-copy">记住上次密钥<small id="saved-state" aria-live="polite">下次打开，自动恢复密钥</small></span><input id="remember" type="checkbox" checked><span class="toggle" aria-hidden="true"></span></label>
+<section id="output" class="output" data-state="empty" aria-label="动态验证码">
+<div class="output-heading"><span>动态验证码</span><span id="badge" class="badge" role="status">等待密钥</span></div>
+<div id="code" class="code" aria-label="当前验证码">··· ···</div>
+<div class="timer"><svg viewBox="0 0 36 36" aria-hidden="true"><circle class="track" cx="18" cy="18" r="15"/><circle id="ring" cx="18" cy="18" r="15"/></svg><span id="countdown">输入密钥后自动生成</span></div>
+<div class="progress-track" aria-hidden="true"><div id="progress"></div></div>
+</section>
+<div class="actions"><button id="copy" disabled type="button"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="8" y="8" width="12" height="13" rx="2.5" stroke="currentColor" stroke-width="1.6"/><path d="M15 5V4a1 1 0 0 0-1-1H5a2 2 0 0 0-2 2v9a1 1 0 0 0 1 1h1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span id="copy-label">复制验证码</span></button><button id="clear" type="button"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 6h16M9 6V4h6v2M6 6l1 14h10l1-14m-8 4v6m4-6v6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>清空</button></div>
+<footer><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m12 3 7 3v5c0 4-3.4 7.2-7 9-3.6-1.8-7-5-7-9V6l7-3Z" stroke="currentColor" stroke-width="1.6"/><path d="m9 11 2 2 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>密钥仅保存在此浏览器，不会上传</footer>
+</main>
+<p class="bottom-note">PRIVATE BY DESIGN</p>
+</div>
+<div id="toast" role="status"></div>
+<script type="module">function decodeSecret(value){const s=value.toUpperCase().replace(/\s/g,'').replace(/=+$/,'');if(!/^[A-Z2-7]+$/.test(s)||![0,2,4,5,7].includes(s.length%8))throw Error('请输入有效的 Base32 密钥（字母 A–Z、数字 2–7）。');let bits=0,acc=0;const out=[];for(const c of s){acc=(acc<<5)|'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'.indexOf(c);bits+=5;if(bits>=8){bits-=8;out.push((acc>>bits)&255);acc&=(1<<bits)-1;}}if(acc!==0||out.length===0)throw Error('密钥格式不完整，请检查后重试。');return new Uint8Array(out);}
+async function totp(secret,time=Date.now(),digits=6){const key=await crypto.subtle.importKey('raw',decodeSecret(secret),{name:'HMAC',hash:'SHA-1'},false,['sign']);const counter=new ArrayBuffer(8);new DataView(counter).setBigUint64(0,BigInt(Math.floor(time/30000)));const mac=new Uint8Array(await crypto.subtle.sign('HMAC',key,counter));const o=mac[mac.length-1]&15;const n=((mac[o]&127)<<24)|(mac[o+1]<<16)|(mac[o+2]<<8)|mac[o+3];return String(n%10**digits).padStart(digits,'0');}
+
+
+
+const $ = id => document.getElementById(id);
+const secret = $('secret');
+const remember = $('remember');
+const KEY = 'keylane.secret';
+const PREF = 'keylane.remember';
+const hint = '支持 Base32 密钥，自动忽略空格。';
+let version = 0, current = '', currentStep = -1, requestedStep = -1;
+let toastTimer, inputTimer, copiedTimer;
+
+function toast(message) {
+  $('toast').textContent = message;
+  $('toast').classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => $('toast').classList.remove('show'), 2600);
+}
+function storageStatus(text, failed = false) {
+  $('saved-state').textContent = text;
+  $('saved-state').classList.toggle('storage-error', failed);
+}
+function persist(valid = false) {
+  try {
+    localStorage.setItem(PREF, String(remember.checked));
+    if (!remember.checked || !secret.value.trim()) {
+      localStorage.removeItem(KEY);
+      storageStatus(remember.checked ? '下次打开，自动恢复密钥' : '仅在本次页面中使用');
+    } else if (valid) {
+      localStorage.setItem(KEY, secret.value.toUpperCase().replace(/\s/g, ''));
+      storageStatus('已保存在此浏览器');
+    }
+    return true;
+  } catch {
+    storageStatus('浏览器存储不可用，请勿依赖自动保存', true);
+    return false;
+  }
+}
+function clearCopyFeedback() {
+  clearTimeout(copiedTimer);
+  $('copy-label').textContent = '复制验证码';
+  $('copy').classList.remove('copied');
+}
+function reset() {
+  current = '';
+  currentStep = -1;
+  $('code').textContent = '··· ···';
+  $('copy').disabled = true;
+  $('badge').textContent = '等待密钥';
+  $('countdown').textContent = '输入密钥后自动生成';
+  $('ring').style.strokeDashoffset = '94.25';
+  $('progress').style.transform = 'scaleX(0)';
+  $('output').dataset.state = 'empty';
+  $('output').classList.remove('expiring');
+  clearCopyFeedback();
+}
+function hideSecret() {
+  secret.type = 'password';
+  $('reveal').textContent = '显示';
+  $('reveal').setAttribute('aria-label', '显示密钥');
+  $('reveal').setAttribute('aria-pressed', 'false');
+}
+function showError(message) {
+  reset();
+  $('error').textContent = message;
+  $('error').className = 'hint error';
+  secret.setAttribute('aria-invalid', 'true');
+  $('badge').textContent = '检查密钥';
+  $('output').dataset.state = 'error';
+}
+async function update({ save = false } = {}) {
+  const revision = ++version;
+  const value = secret.value;
+  const time = Date.now();
+  const step = Math.floor(time / 30000);
+  requestedStep = step;
+  if (!value.trim()) { reset(); return; }
+  try {
+    if (!globalThis.crypto?.subtle) throw Error('当前浏览器不支持生成验证码，请使用新版浏览器打开。');
+    const code = await totp(value, time);
+    if (revision !== version) return;
+    if (Math.floor(Date.now() / 30000) !== step) { return update({ save }); }
+    if (current && current !== code) clearCopyFeedback();
+    current = code;
+    currentStep = step;
+    $('code').textContent = code.slice(0, 3) + ' ' + code.slice(3);
+    $('copy').disabled = false;
+    $('badge').textContent = '实时更新';
+    $('output').dataset.state = 'ready';
+    $('error').textContent = hint;
+    $('error').className = 'hint';
+    secret.setAttribute('aria-invalid', 'false');
+    if (save) persist(true);
+    tick();
+  } catch (error) {
+    if (revision !== version) return;
+    showError(error.message);
+    if (save && remember.checked) storageStatus('格式有误，未覆盖之前保存的密钥');
+  }
+}
+function tick() {
+  if (!current) return;
+  const step = Math.floor(Date.now() / 30000);
+  if (step !== currentStep) {
+    // A stale code is never presented as usable during an async refresh.
+    $('copy').disabled = true;
+    $('badge').textContent = '正在更新';
+    if (step !== requestedStep) update();
+    return;
+  }
+  const left = 30 - Math.floor(Date.now() / 1000) % 30;
+  $('countdown').textContent = left <= 5 ? left + ' 秒后更新，请及时使用' : left + ' 秒后更新';
+  $('ring').style.strokeDashoffset = String(94.25 * (1 - left / 30));
+  $('progress').style.transform = 'scaleX(' + left / 30 + ')';
+  $('output').classList.toggle('expiring', left <= 5);
+}
+function legacyCopy(text) {
+  const field = document.createElement('textarea');
+  field.value = text;
+  field.setAttribute('readonly', '');
+  field.style.cssText = 'position:fixed;left:-9999px;top:0;font-size:16px';
+  const previous = document.activeElement;
+  document.body.appendChild(field);
+  field.select();
+  field.setSelectionRange(0, text.length);
+  let ok = false;
+  try { ok = document.execCommand('copy'); }
+  finally { field.remove(); previous?.focus({ preventScroll: true }); }
+  return ok;
+}
+async function writeClipboard(text) {
+  try {
+    if (!navigator.clipboard?.writeText) throw Error('Clipboard unavailable');
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    try { return legacyCopy(text); } catch { return false; }
+  }
+}
+secret.addEventListener('input', () => {
+  ++version;
+  clearTimeout(inputTimer);
+  reset();
+  $('error').textContent = hint;
+  $('error').className = 'hint';
+  secret.setAttribute('aria-invalid', 'false');
+  if (!secret.value.trim()) { persist(); return; }
+  if (remember.checked) storageStatus('验证后自动保存');
+  inputTimer = setTimeout(() => update({ save: true }), 220);
+});
+remember.addEventListener('change', () => {
+  if (persist(!!current)) toast(remember.checked ? '已开启本地记忆' : '已关闭记忆，保存的密钥已移除');
+});
+$('reveal').onclick = () => {
+  if (secret.type === 'text') { hideSecret(); return; }
+  secret.type = 'text';
+  $('reveal').textContent = '隐藏';
+  $('reveal').setAttribute('aria-label', '隐藏密钥');
+  $('reveal').setAttribute('aria-pressed', 'true');
+};
+$('clear').onclick = () => {
+  ++version;
+  clearTimeout(inputTimer);
+  secret.value = '';
+  reset();
+  hideSecret();
+  $('error').textContent = hint;
+  $('error').className = 'hint';
+  secret.setAttribute('aria-invalid', 'false');
+  const removed = persist();
+  toast(removed ? '密钥与本地记录已清空' : '页面已清空，但无法删除浏览器记录');
+  secret.focus();
+};
+$('copy').onclick = async () => {
+  if (!current || $('copy').disabled) return;
+  const revision = version;
+  const copiedCode = current;
+  const copiedStep = currentStep;
+  if (Math.floor(Date.now() / 30000) !== copiedStep) { await update(); toast('验证码已更新，请重新复制'); return; }
+  const ok = await writeClipboard(copiedCode);
+  if (revision !== version) return;
+  if (!ok) { toast('无法自动复制，请长按或选中验证码复制'); return; }
+  if (Math.floor(Date.now() / 30000) !== copiedStep) { toast('刚复制的验证码已到期，请复制新验证码'); return; }
+  clearCopyFeedback();
+  $('copy-label').textContent = '已复制';
+  $('copy').classList.add('copied');
+  toast('验证码已复制');
+  copiedTimer = setTimeout(clearCopyFeedback, 2200);
+};
+try {
+  remember.checked = localStorage.getItem(PREF) !== 'false';
+  if (remember.checked) secret.value = localStorage.getItem(KEY) || '';
+  storageStatus(secret.value ? '已恢复上次的密钥' : remember.checked ? '下次打开，自动恢复密钥' : '仅在本次页面中使用');
+} catch { storageStatus('浏览器存储不可用，请勿依赖自动保存', true); }
+update();
+setInterval(tick, 250);
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) hideSecret();
+  else { clearTimeout(inputTimer); update({ save: true }); }
+});
+</script>
+</body>
+</html>
